@@ -35,6 +35,7 @@
 #include <mt32emu/mt32emu.h>
 #include "resample/SampleRateConverter.h"
 #include "mt32emu_lv2_common.h"
+#include "../../mt32emu/src/Structures.h"
 
 /*** List of memory regions to save/restore */
 struct MT32StateRegion
@@ -229,18 +230,8 @@ protected:
     void onNewReverbLevel(MT32Emu::Bit8u /*level*/) {}
     void onPolyStateChanged(int partNum)
     {
-        const MT32Emu::Part *part = m_synth->getPart(partNum);
-        const MT32Emu::Poly *poly = part->getFirstActivePoly();
-        // Count number of polys, as well as non-releasing polys, and
-        // send statistics
         int numPolys = 0;
         int numPolysNonReleasing = 0;
-        while (poly != NULL) {
-            if (poly->getState() != MT32Emu::POLY_Releasing)
-                numPolysNonReleasing += 1;
-            numPolys += 1;
-            poly = poly->getNext();
-        }
         LV2_Atom_Forge_Frame frame;
         lv2_atom_forge_frame_time(&m_forge, 0);
         lv2_atom_forge_object(&m_forge, &frame, 0, m_uris.atom_eventTransfer);
