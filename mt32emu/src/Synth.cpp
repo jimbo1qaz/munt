@@ -2440,7 +2440,7 @@ void Synth::softReset() {
 	for (int i = 0; i < 9; i++) {
 		parts[i]->reset();
 	}
-	isEnabled = false;
+	activated = false;
 }
 
 } // namespace MT32Emu
