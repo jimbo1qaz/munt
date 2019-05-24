@@ -51,7 +51,7 @@ SamplerateAdapter::~SamplerateAdapter() {
 	src_delete(resampler);
 }
 
-void SamplerateAdapter::getOutputSamples(MT32Emu::Sample *buffer, unsigned int length) {
+void SamplerateAdapter::getOutputSamples(MT32Emu::Bit16s *buffer, unsigned int length) {
 	if (resampler == NULL) {
 		Synth::muteSampleBuffer(buffer, 2 * length);
 		return;

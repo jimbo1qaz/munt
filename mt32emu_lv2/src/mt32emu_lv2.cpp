@@ -589,7 +589,7 @@ void MuntPlugin::run(uint32_t sample_count)
         }
     }
 
-    MT32Emu::Sample samples[MT32Emu::MAX_SAMPLES_PER_RUN*2];
+    MT32Emu::Bit16s samples[MT32Emu::MAX_SAMPLES_PER_RUN*2];
     uint32_t offset = 0;
     while(offset < sample_count) {
         uint32_t framesToRender = std::min(sample_count - offset, MT32Emu::MAX_SAMPLES_PER_RUN);
