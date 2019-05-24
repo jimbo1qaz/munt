@@ -4,8 +4,22 @@ set(munt_VERSION_MAJOR 2)
 set(munt_VERSION_MINOR 3)
 set(munt_VERSION_PATCH 0)
 
-option(munt_WITH_MT32EMU_SMF2WAV "Build command line standard MIDI file conversion tool" TRUE)
-option(munt_WITH_MT32EMU_QT "Build Qt-based UI-enabled application" TRUE)
+option(munt_WITH_MT32EMU_SMF2WAV "Build command line standard MIDI file conversion tool" FALSE)
+option(munt_WITH_MT32EMU_QT "Build Qt-based UI-enabled application" FALSE)
+option(munt_WITH_MT32EMU_LV2 "Build LV2 plugin" TRUE)
+option(munt_WITH_MT32EMU_LV2UI "Build Qt-based LV2 plugin GUI" TRUE)
+
+set(LV2_INSTALL_DIR lib/lv2 CACHE PATH "Specifies where the LV2 libraries should be installed")
+
+# Set a default build type for single-configuration
+# CMake generators if no build type is set.
+IF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+   SET(CMAKE_BUILD_TYPE RelWithDebInfo)
+ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+
+# Common between LV2 and LV2UI
+find_package (PkgConfig REQUIRED)
+pkg_check_modules(LV2 lv2>=.0.1.0) # sets LV2_LIBRARIES
 
 add_subdirectory(mt32emu)
 
@@ -19,6 +33,16 @@ if(munt_WITH_MT32EMU_QT)
   add_dependencies(mt32emu-qt mt32emu)
 endif()
 
+if(munt_WITH_MT32EMU_LV2)
+  add_subdirectory(mt32emu_lv2)
+  add_dependencies(mt32emu-lv2 mt32emu)
+endif()
+
+if(munt_WITH_MT32EMU_LV2UI)
+  add_subdirectory(mt32emu_lv2ui)
+  add_dependencies(mt32emu-lv2ui mt32emu)
+endif()
+
 # build a CPack driven installer package
 set(CPACK_PACKAGE_VERSION_MAJOR "${munt_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${munt_VERSION_MINOR}")
@@ -27,7 +51,7 @@ set(CPACK_PACKAGE_VENDOR "muntemu.org")
 set(CPACK_PACKAGE_CONTACT "sergm@muntemu.org")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Software synthesiser emulating pre-GM MIDI devices such as Roland MT-32, CM-32L, CM-64 and LAPC-I")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/mt32emu_qt/COPYING.txt")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 set(CPACK_STRIP_FILES TRUE)
 set(CPACK_SOURCE_GENERATOR TGZ)
 set(CPACK_SOURCE_STRIP_FILES TRUE)

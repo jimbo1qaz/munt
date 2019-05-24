@@ -1,0 +1,72 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0300 
+header_name {.h} 
+code_name {.cxx}
+class FLMuntUI {open
+} {
+  Function {make_window()} {open
+  } {
+    Fl_Window w {open selected
+      xywh {416 512 430 85} type Double
+      code0 {\#include <FL/x.H>}
+      code1 {\#include "munt_ui_controller.h"}
+      code2 {\#include <FL/Fl_File_Chooser.H>} visible
+    } {
+      Fl_Button {} {
+        label Reset
+        callback {c->resetSynth();}
+        tooltip {Reset the synthesizer. This resets the state to factory settings.} xywh {335 15 80 25}
+      }
+      Fl_Box display {
+        label Display
+        xywh {45 46 244 24}
+        code0 {\#include "fl_lcd_display.h"}
+        class LCDDisplay
+      }
+      Fl_Box {} {
+        label MT32EMU
+        xywh {100 14 140 21}
+      }
+      Fl_Button {} {
+        label {Load syx}
+        callback {fc->show();}
+        tooltip {Load a MT-32 SysEx (.syx) file} xywh {335 45 80 25}
+      }
+    }
+    code {fc = new Fl_File_Chooser(0, "MT32 SysEx files (*.syx)", Fl_File_Chooser::SINGLE, "Select .syx file to load");
+fc->callback(fc_callback, this);} {}
+  }
+  Function {FLMuntUI(MuntUIController *controller)} {open
+  } {
+    code {make_window();
+w->show();
+c = controller;} {}
+  }
+  Function {~FLMuntUI()} {open
+  } {
+    code {delete w;
+delete fc;} {}
+  }
+  Function {FLMuntUI(MuntUIController *controller, void* parentWindow)} {open
+  } {
+    code {make_window();
+fl_open_display();
+fl_embed(w, (Window)parentWindow);
+c = controller;} {}
+  }
+  decl {MuntUIController *c;} {private local
+  }
+  decl {Fl_File_Chooser *fc;} {private local
+  }
+  Function {fc_callback(Fl_File_Chooser *fc, void *self)} {open C return_type {static void}
+  } {
+    code {if (fc->shown())
+    return;
+const char *filename = fc->value();
+static_cast<FLMuntUI*>(self)->c->loadSyx(filename);} {}
+  }
+  Function {load_syx(const char *filename)} {open return_type void
+  } {
+    code {printf("Hello, World! %s\\n", filename);} {}
+  }
+} 
