@@ -497,8 +497,10 @@ public:
 	// total of 9 bits hold the states of all the parts. If the returned bit for a part is set, there is at least one active
 	// non-releasing partial playing on this part. This info is useful in emulating behaviour of LCD display of the hardware units.
 	MT32EMU_EXPORT Bit32u getPartStates() const;
-	void writeMemory(Bit32u addr, Bit32u len, const Bit8u *data);
-	void softReset();
+
+	// Added for LV2 plugin.
+	MT32EMU_EXPORT void writeMemory(Bit32u addr, Bit32u len, const Bit8u *data);
+	MT32EMU_EXPORT void softReset();
 
 	// Fills in current states of all the partials into the array provided. The array must be large enough to accommodate states of all the partials.
 	MT32EMU_EXPORT void getPartialStates(PartialState *partialStates) const;
