@@ -216,7 +216,7 @@ public:
 };
 class TimbresMemoryRegion : public MemoryRegion {
 public:
-	TimbresMemoryRegion(Synth *useSynth, Bit8u *useRealMemory, Bit8u *useMaxTable) : MemoryRegion(useSynth, useRealMemory, useMaxTable, MR_Timbres, MT32EMU_MEMADDR(0x080000), sizeof(MemParams::PaddedTimbre), 64 + 64 + 64 + 64) {}
+	TimbresMemoryRegion(Synth *useSynth, Bit8u *useRealMemory, Bit8u *useMaxTable) : MemoryRegion(useSynth, useRealMemory, useMaxTable, MR_Timbres, MT32EMU_MEMADDR(0x060000), sizeof(MemParams::PaddedTimbre), 64 + 64 + 64 + 64) {}
 };
 class SystemMemoryRegion : public MemoryRegion {
 public:
@@ -534,9 +534,13 @@ public:
 	unsigned int getPartialCount() const;
 
 	void readMemory(Bit32u addr, Bit32u len, Bit8u *data);
+	void writeMemory(Bit32u addr, Bit32u len, const Bit8u *data);
 
 	// partNum should be 0..7 for Part 1..8, or 8 for Rhythm
 	const Part *getPart(unsigned int partNum) const;
+
+	// Soft reset: stop all sound, reset controllers, but don't reset SysEx state
+	void softReset();
 };
 
 }

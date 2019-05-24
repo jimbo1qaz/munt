@@ -942,6 +942,13 @@ void Synth::readMemory(Bit32u addr, Bit32u len, Bit8u *data) {
 	}
 }
 
+void Synth::writeMemory(Bit32u addr, Bit32u len, const Bit8u *data) {
+	const MemoryRegion *region = findMemoryRegion(addr);
+	if (region != NULL) {
+		writeMemoryRegion(region, addr, len, data);
+	}
+}
+
 void Synth::initMemoryRegions() {
 	// Timbre max tables are slightly more complicated than the others, which are used directly from the ROM.
 	// The ROM (sensibly) just has maximums for TimbreParam.commonParam followed by just one TimbreParam.partialParam,
@@ -1109,8 +1116,8 @@ void Synth::writeMemoryRegion(const MemoryRegion *region, Bit32u addr, Bit32u le
 		break;
 	case MR_Timbres:
 		// Timbres
-		first += 128;
-		last += 128;
+		// first += 128;
+		// last += 128;
 		region->write(first, off, data, len);
 		for (unsigned int i = first; i <= last; i++) {
 #if MT32EMU_MONITOR_TIMBRES >= 1
@@ -1719,6 +1726,14 @@ void MemoryRegion::write(unsigned int entry, unsigned int off, const Bit8u *src,
 		}
 		memOff++;
 	}
+}
+
+void Synth::softReset() {
+	partialManager->deactivateAll();
+	for (int i = 0; i < 9; i++) {
+		parts[i]->reset();
+	}
+	isEnabled = false;
 }
 
 }
