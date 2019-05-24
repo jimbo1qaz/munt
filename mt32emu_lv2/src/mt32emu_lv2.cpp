@@ -33,7 +33,8 @@
 #include "lv2/lv2plug.in/ns/lv2core/lv2.h"
 
 #include <mt32emu/mt32emu.h>
-#include "resample/SampleRateConverter.h"
+#include <mt32emu/SampleRateConverter.h>
+#include <mt32emu/Enumerations.h>
 #include "mt32emu_lv2_common.h"
 #include "../../mt32emu/src/Structures.h"
 
@@ -154,7 +155,7 @@ private:
     uint64_t m_timestamp;
     /// Ratio scaling from real samples to MT32 samples
     double m_rateRatio;
-    SampleRateConverter *m_converter;
+    MT32Emu::SampleRateConverter *m_converter;
     LV2_Atom_Forge m_forge;
     LV2_Atom_Forge_Frame m_notify_frame;
 
@@ -445,7 +446,7 @@ void MuntPlugin::initSynth()
     }
     m_timestamp = 0;
     if (m_rate != MT32Emu::SAMPLE_RATE) {
-        m_converter = SampleRateConverter::createSampleRateConverter(m_synth, m_rate);
+        m_converter = new MT32Emu::SampleRateConverter(*m_synth, m_rate, MT32Emu::SamplerateConversionQuality_GOOD);
         fprintf(stdout, "Converting sample rate from %f to %f\n", (double)MT32Emu::SAMPLE_RATE, m_rate);
         fflush(stdout);
     }
